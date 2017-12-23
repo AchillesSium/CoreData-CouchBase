@@ -1,0 +1,6 @@
+framework module Pods_CoreData_CouchBase {
+  umbrella header "Pods-CoreData&CouchBase-umbrella.h"
+
+  export *
+  module * { export * }
+}
