@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		27E4A10125E528BD048F65E4 /* Pods_CoreData_CouchBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC997A35AC9CAA9750ABA46 /* Pods_CoreData_CouchBase.framework */; };
+		6AA2CF941FEE58550090F5AC /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA2CF931FEE58550090F5AC /* Utilities.swift */; };
 		6AD1F6AB1FEE304000C1DEAD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */; };
 		6AD1F6AD1FEE304000C1DEAD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */; };
 		6AD1F6B01FEE304000C1DEAD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AE1FEE304000C1DEAD /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6AA2CF931FEE58550090F5AC /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = ../../../../XcodeSiumProjects/CouchBaseLiteSium2/CouchBaseLiteSium2/Utilities.swift; sourceTree = "<group>"; };
 		6AD1F6A71FEE304000C1DEAD /* CoreData&CouchBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoreData&CouchBase.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			children = (
 				6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */,
 				6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */,
+				6AA2CF931FEE58550090F5AC /* Utilities.swift */,
 				6AD1F6AE1FEE304000C1DEAD /* Main.storyboard */,
 				6AD1F6B41FEE304000C1DEAD /* Assets.xcassets */,
 				6AD1F6B61FEE304000C1DEAD /* LaunchScreen.storyboard */,
@@ -269,6 +272,7 @@
 			files = (
 				6AD1F6AD1FEE304000C1DEAD /* ViewController.swift in Sources */,
 				6AD1F6B31FEE304000C1DEAD /* CoreData_CouchBase.xcdatamodeld in Sources */,
+				6AA2CF941FEE58550090F5AC /* Utilities.swift in Sources */,
 				6AD1F6AB1FEE304000C1DEAD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
