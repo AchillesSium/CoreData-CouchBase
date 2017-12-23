@@ -56,6 +56,7 @@
 		6AD1F6CC1FEE315200C1DEAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		6AD1F6CE1FEE315E00C1DEAD /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		6AF28DAE1FEE377A00A8A4CC /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLite.framework; path = Carthage/Build/iOS/CouchbaseLite.framework; sourceTree = "<group>"; };
+		6AF28DB41FEE406E00A8A4CC /* CoreData&CouchBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CoreData&CouchBase.h"; path = "../../../../XcodeSiumProjects/Grocery-Sync-iOS/Source/CoreData&CouchBase.h"; sourceTree = "<group>"; };
 		8DC997A35AC9CAA9750ABA46 /* Pods_CoreData_CouchBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreData_CouchBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E580537437A8D33D5A5C1B7 /* Pods-CoreData&CouchBase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreData&CouchBase.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CoreData&CouchBase/Pods-CoreData&CouchBase.debug.xcconfig"; sourceTree = "<group>"; };
 		F115F834D22982399035C319 /* Pods-CoreData&CouchBase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreData&CouchBase.release.xcconfig"; path = "Pods/Target Support Files/Pods-CoreData&CouchBase/Pods-CoreData&CouchBase.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 				6AD1F6B61FEE304000C1DEAD /* LaunchScreen.storyboard */,
 				6AD1F6B91FEE304000C1DEAD /* Info.plist */,
 				6AD1F6B11FEE304000C1DEAD /* CoreData_CouchBase.xcdatamodeld */,
+				6AF28DB41FEE406E00A8A4CC /* CoreData&CouchBase.h */,
 			);
 			path = "CoreData&CouchBase";
 			sourceTree = "<group>";

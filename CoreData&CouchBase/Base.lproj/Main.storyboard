@@ -76,6 +76,16 @@
                         <color key="backgroundColor" red="0.36527287917655038" green="1" blue="0.63480585661573929" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="ageLabel" destination="KcI-pN-nru" id="Hjj-FK-CCq"/>
+                        <outlet property="ageTextField" destination="Z6z-y4-cXG" id="76r-at-rRR"/>
+                        <outlet property="nameLabel" destination="J2q-9e-wKh" id="10o-10-J1H"/>
+                        <outlet property="nameTextField" destination="AsJ-dS-VEz" id="OKC-rb-6Ka"/>
+                        <outlet property="saveButtonOutlet" destination="Ivm-nf-6PZ" id="1zh-SF-hTE"/>
+                        <outlet property="searchButtonOutlet" destination="gKG-zW-UKc" id="CjU-Bn-Lzs"/>
+                        <outlet property="searchTextField" destination="hJr-Fd-BrA" id="pvG-nc-I2b"/>
+                        <outlet property="uniqueIDTextField" destination="nY7-bk-Tj8" id="5eo-kT-CiW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
