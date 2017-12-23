@@ -21,7 +21,23 @@
 		6AD1F6CB1FEE314900C1DEAD /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD1F6CA1FEE314900C1DEAD /* libsqlite3.tbd */; };
 		6AD1F6CD1FEE315300C1DEAD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD1F6CC1FEE315200C1DEAD /* libz.tbd */; };
 		6AD1F6CF1FEE315E00C1DEAD /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD1F6CE1FEE315E00C1DEAD /* libc++.tbd */; };
+		6AF28DAF1FEE377A00A8A4CC /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF28DAE1FEE377A00A8A4CC /* CouchbaseLite.framework */; };
+		6AF28DB01FEE377A00A8A4CC /* CouchbaseLite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF28DAE1FEE377A00A8A4CC /* CouchbaseLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6AF28DB11FEE377A00A8A4CC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6AF28DB01FEE377A00A8A4CC /* CouchbaseLite.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6AD1F6A71FEE304000C1DEAD /* CoreData&CouchBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoreData&CouchBase.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,6 +55,7 @@
 		6AD1F6CA1FEE314900C1DEAD /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		6AD1F6CC1FEE315200C1DEAD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		6AD1F6CE1FEE315E00C1DEAD /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		6AF28DAE1FEE377A00A8A4CC /* CouchbaseLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLite.framework; path = Carthage/Build/iOS/CouchbaseLite.framework; sourceTree = "<group>"; };
 		8DC997A35AC9CAA9750ABA46 /* Pods_CoreData_CouchBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreData_CouchBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E580537437A8D33D5A5C1B7 /* Pods-CoreData&CouchBase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreData&CouchBase.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CoreData&CouchBase/Pods-CoreData&CouchBase.debug.xcconfig"; sourceTree = "<group>"; };
 		F115F834D22982399035C319 /* Pods-CoreData&CouchBase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreData&CouchBase.release.xcconfig"; path = "Pods/Target Support Files/Pods-CoreData&CouchBase/Pods-CoreData&CouchBase.release.xcconfig"; sourceTree = "<group>"; };
@@ -53,6 +70,7 @@
 				6AD1F6C51FEE312700C1DEAD /* CFNetwork.framework in Frameworks */,
 				6AD1F6C71FEE313300C1DEAD /* Security.framework in Frameworks */,
 				6AD1F6C91FEE314200C1DEAD /* SystemConfiguration.framework in Frameworks */,
+				6AF28DAF1FEE377A00A8A4CC /* CouchbaseLite.framework in Frameworks */,
 				6AD1F6CB1FEE314900C1DEAD /* libsqlite3.tbd in Frameworks */,
 				6AD1F6CF1FEE315E00C1DEAD /* libc++.tbd in Frameworks */,
 				6AD1F6CD1FEE315300C1DEAD /* libz.tbd in Frameworks */,
@@ -75,6 +93,7 @@
 		6AD1F69E1FEE304000C1DEAD = {
 			isa = PBXGroup;
 			children = (
+				6AF28DAE1FEE377A00A8A4CC /* CouchbaseLite.framework */,
 				6AD1F6A91FEE304000C1DEAD /* CoreData&CouchBase */,
 				6AD1F6A81FEE304000C1DEAD /* Products */,
 				6AD1F6C11FEE30C600C1DEAD /* CouchbaseLite.framework */,
@@ -132,6 +151,7 @@
 				6AD1F6A51FEE304000C1DEAD /* Resources */,
 				935F8CF7FEC78832D475EE31 /* [CP] Embed Pods Frameworks */,
 				BE49AF0779357333FF2ADF52 /* [CP] Copy Pods Resources */,
+				6AF28DB11FEE377A00A8A4CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -387,6 +407,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G48LL7L4X6;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "CoreData&CouchBase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
@@ -404,6 +428,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G48LL7L4X6;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "CoreData&CouchBase/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
