@@ -10,7 +10,9 @@ import UIKit
 import CoreData
 import CouchbaseLite
 
-class ViewController: UIViewController, UITextFieldDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+    
+    
     
     @IBOutlet weak var uniqueIDTextField: UITextField!
     
@@ -29,8 +31,33 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var ageLabel: UILabel!
     
+    
+    @IBOutlet weak var testTableView: UITableView!
+    
+    @IBOutlet weak var idLabel: UILabel!
+    
+    
+    
     var database: CBLDatabase!
-
+    var query: CBLQuery!
+    let person = Person()
+    var cell = CustomTableViewCell()
+    let core = CoreDataHandler()
+    var corePerson: [Persons]? = nil
+    
+    var docsEnumerator: CBLQueryEnumerator? {
+        didSet {
+            core.cleanCoreData()
+            self.testTableView.reloadData()
+        }
+    }
+    
+    
+    enum datas: String {
+        case uniqueID = "id"
+        case name = "name"
+        case age = "age"
+    }
     
     
     //MARK: - Initialization
@@ -39,37 +66,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
         guard database != nil else {return false}
         self.database = database
        
-        
-        database.viewNamed("byDate").setMapBlock({ (doc, emit) in
-            if let date = doc["created_at"] as? String {
-                emit(date, doc)
-                
+        database.viewNamed("byAge").setMapBlock({ (doc, emit) in
+            if let ID = doc["age"] as? String {
+                emit(ID, doc)
             }
         }, reduce: nil, version: "2")
         
-        database.viewNamed("byNum").setMapBlock({ (doc, emit) in
-            if let num = doc["number"] as? String {
-                emit(num, doc)
-            }
-        }, reduce: nil, version: "2")
-        
-        database.viewNamed("byName").setMapBlock({ (doc, emit) in
-            if let name = doc["text"] as? String {
-                emit(name, doc)
-            }
-        }, reduce: nil, version: "2")
-        
-        
-        
-        // ...and a validation function requiring parseable dates:
-        database.setValidationNamed("created_at") {
-            (newRevision, context) in
-            if !newRevision.isDeletion,
-                let date = newRevision.properties?["created_at"] as? String
-                , NSDate.withJSONObject(jsonObj: date as AnyObject) == nil {
-                context.reject(withMessage: "invalid date \(date)")
-            }
-        }
         return true
     }
     
@@ -85,76 +87,143 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.ageTextField.delegate = self
         self.searchTextField.delegate = self
         
+        self.idLabel.isHidden = true
         self.nameLabel.isHidden = true
         self.ageLabel.isHidden = true
         
         
+        self.testTableView.dataSource = self
+        self.testTableView.delegate = self
+        self.testTableView.isHidden = true
+        
         // Database-related initialization:
         if useDatabase(database: appDelegate.database) {
             // Create a query sorted by descending date, i.e. newest items first:
-            /*let query = database.viewNamed("byDate").createQuery().asLive()
-             query.descending = true
-             
-             // Plug the query into the CBLUITableSource, which will use it to drive the table view.
-             // (The CBLUITableSource uses KVO to observe the query's .rows property.)
-             self.dataSource.query = query
-             //docu = self.dataSource.labelProperty = "text"
-             self.dataSource.labelProperty = "number"// Document property to display in the cell label*/
+           
             
-           /* self.query = database.viewNamed("byNum").createQuery().asLive()
-            self.textQuery = database.viewNamed("byName").createQuery().asLive()
+            self.query = database.viewNamed("byAge").createQuery().asLive()
             
             self.query.descending = true
-            self.textQuery.descending = true
             
             guard self.query != nil else {
                 return
             }
-            guard self.textQuery != nil else {
-                return
-            }
-            
-            self.query.startKey = "2"
-            self.query.endKey = "0"
-            
-            self.textQuery.startKey = "e"
-            self.textQuery.endKey = "a"
-            
-            
+ 
             self.query?.limit = UInt(UINT32_MAX)
-            // self.dataSource.query = query2
-            //  self.dataSource.labelProperty = "number"
-            //print(docu)
-            //print(query2.rows)
+            
             self.addNormalLiveQueryObserverAndStartObserving()
             
             self.query?.runAsync({ (enumerator, error) in
                 switch error {
                 case nil:
-                    // 5: The "enumerator" is of type CBLQueryEnumerator and is an enumerator for the results
-                    self.numberQueryEnumerator = enumerator
+                    
+                    self.docsEnumerator = enumerator
                     
                 default:
-                    //self.showAlertWithTitle(NSLocalizedString("Data Fetch Error!", comment: ""), message: error.localizedDescription)
+                    
                     print(error)
                 }
             })
             
-            self.textQuery?.runAsync({ (enumerator, error) in
-                switch error {
-                case nil:
-                    self.textQueryEnumerator = enumerator
-                    
-                default:
-                    print(error)
-                }
-            })*/
-            
-            
-            
         }
     }
 
+    func addNormalLiveQueryObserverAndStartObserving() {
+        self.query.addObserver(self, forKeyPath: "rows", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        do {
+            try self.query.run()
+        } catch {
+            print(error)
+        }
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.testTableView.reloadData()
+    }
+
+    @IBAction func saveButtonAction(_ sender: Any) {
+        
+        if uniqueIDTextField.text != "" && nameTextField.text != "" && ageTextField.text != "" {
+            let id = uniqueIDTextField.text
+            let name = nameTextField.text
+            let age = ageTextField.text
+            
+            uniqueIDTextField.text = nil
+            nameTextField.text = nil
+            ageTextField.text = nil
+            
+            let properties: [String : AnyObject] = [
+                "id": id as AnyObject,
+                "name": name as AnyObject,
+                "age": age as AnyObject,
+                "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
+            ]
+            
+            // Save the document:
+            let doc = database.createDocument()
+            do {
+                try doc.putProperties(properties)
+                print("Database Created")
+            } catch let error as NSError {
+              
+                print("this is \(error)")
+            }
+        }
+        uniqueIDTextField.resignFirstResponder()
+        nameTextField.resignFirstResponder()
+        ageTextField.resignFirstResponder()
+        searchTextField.resignFirstResponder()
+        self.testTableView.reloadData()
+    }
+    
+    //Table view to retrive datas
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (Int(self.docsEnumerator?.count ?? 0))
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
+        
+        print("this is number of row \(String(describing: self.docsEnumerator?.count))")
+        if let queryRow = self.docsEnumerator?.row(at: UInt(indexPath.row)) {
+            if let userProps = queryRow.document?.userProperties, let uniqueID = userProps[datas.uniqueID.rawValue] as? String, let name = userProps[datas.name.rawValue] as? String, let age = userProps[datas.age.rawValue] as? String {
+            
+                cell.label?.text = age
+                person.uniqueIDs = Int(uniqueID)
+                print("This is ID = \(person.uniqueIDs)")
+                person.names = name
+                print("This is name = \(person.names)")
+                person.ages = Int(age)
+                print("This is age = \(person.ages)")
+                
+                core.savedObjects(id: Int(person.uniqueIDs), name: String(person.names), age: Int(person.ages))
+                
+            }
+        }
+        return cell
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rows" {
+            self.query?.runAsync({ (enumerator, error) in
+                switch error {
+                case nil:
+                    self.docsEnumerator = enumerator
+                    
+                default:
+                    
+                    print(error)
+                }
+            })
+            core.cleanCoreData()
+            self.testTableView.reloadData()
+        }
+    }
     
     //TextField Delegates
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -180,43 +249,36 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         
-        
         return
     }
     
-    @IBAction func saveButtonAction(_ sender: Any) {
-        
-        if uniqueIDTextField.text != "" && nameTextField.text != "" && ageTextField.text != "" {
-            let id = uniqueIDTextField.text
-            let name = nameTextField.text
-            let age = ageTextField.text
-            
+    
+    
+    @IBAction func searchAction(_ sender: Any) {
+        if searchTextField.text != "" {
+            let searchedText = Int16(searchTextField.text!)
+            corePerson = core.fetchID()
+            for i in corePerson! {
+                 if searchedText == i.id {
+                    idLabel.isHidden = false
+                    nameLabel.isHidden = false
+                    ageLabel.isHidden = false
+                    idLabel.text = "ID: \(String(i.id))"
+                    nameLabel.text = "Name: \(String(describing: i.name!))"
+                    ageLabel.text = "Age: \(String(i.age))"
+                }
+            }
+        } else {
             uniqueIDTextField.text = nil
             nameTextField.text = nil
             ageTextField.text = nil
             
-            let properties: [String : AnyObject] = [
-                "uniqueID": id as AnyObject,
-                "name": name as AnyObject,
-                "age": age as AnyObject,
-                "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
-            ]
-            
-            // Save the document:
-            let doc = database.createDocument()
-            do {
-                try doc.putProperties(properties)
-                print("Database Created")
-            } catch let error as NSError {
-                print("jyfufgv")
-                //self.appDelegate.showAlert(message: "Couldn't save new item", error)
-                print("this is \(error)")
-            }
+            self.idLabel.isHidden = true
+            self.nameLabel.isHidden = true
+            self.ageLabel.isHidden = true
         }
+        searchTextField.resignFirstResponder()
     }
-    
-    
-    
     
     
     var appDelegate : AppDelegate {

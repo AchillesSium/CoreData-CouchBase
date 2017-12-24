@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		27E4A10125E528BD048F65E4 /* Pods_CoreData_CouchBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC997A35AC9CAA9750ABA46 /* Pods_CoreData_CouchBase.framework */; };
 		6AA2CF941FEE58550090F5AC /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA2CF931FEE58550090F5AC /* Utilities.swift */; };
+		6AA2CF961FEE684B0090F5AC /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA2CF951FEE684B0090F5AC /* Person.swift */; };
+		6AA2CF981FEE7BFF0090F5AC /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA2CF971FEE7BFF0090F5AC /* CustomTableViewCell.swift */; };
+		6AB2DCF51FEFADA200EFB1F1 /* 8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AB2DCF41FEFADA200EFB1F1 /* 8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap */; };
+		6AB2DCF71FEFADA400EFB1F1 /* 9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AB2DCF61FEFADA400EFB1F1 /* 9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap */; };
+		6AB2DCF91FEFADA800EFB1F1 /* CouchbaseLite.framework.dSYM in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AB2DCF81FEFADA800EFB1F1 /* CouchbaseLite.framework.dSYM */; };
+		6AB2DCFC1FEFBDE000EFB1F1 /* CoreDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB2DCFB1FEFBDE000EFB1F1 /* CoreDataHandler.swift */; };
 		6AD1F6AB1FEE304000C1DEAD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */; };
 		6AD1F6AD1FEE304000C1DEAD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */; };
 		6AD1F6B01FEE304000C1DEAD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AD1F6AE1FEE304000C1DEAD /* Main.storyboard */; };
@@ -42,6 +48,12 @@
 
 /* Begin PBXFileReference section */
 		6AA2CF931FEE58550090F5AC /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = ../../../../XcodeSiumProjects/CouchBaseLiteSium2/CouchBaseLiteSium2/Utilities.swift; sourceTree = "<group>"; };
+		6AA2CF951FEE684B0090F5AC /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		6AA2CF971FEE7BFF0090F5AC /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		6AB2DCF41FEFADA200EFB1F1 /* 8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; name = "8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap"; path = "Carthage/Build/iOS/8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap"; sourceTree = "<group>"; };
+		6AB2DCF61FEFADA400EFB1F1 /* 9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap */ = {isa = PBXFileReference; lastKnownFileType = text; name = "9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap"; path = "Carthage/Build/iOS/9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap"; sourceTree = "<group>"; };
+		6AB2DCF81FEFADA800EFB1F1 /* CouchbaseLite.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = CouchbaseLite.framework.dSYM; path = Carthage/Build/iOS/CouchbaseLite.framework.dSYM; sourceTree = "<group>"; };
+		6AB2DCFB1FEFBDE000EFB1F1 /* CoreDataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataHandler.swift; path = ../../../../XcodeSiumProjects/CouchBaseLiteSium2/CouchBaseLiteSium2/CoreDataHandler.swift; sourceTree = "<group>"; };
 		6AD1F6A71FEE304000C1DEAD /* CoreData&CouchBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoreData&CouchBase.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -73,11 +85,14 @@
 				6AD1F6C51FEE312700C1DEAD /* CFNetwork.framework in Frameworks */,
 				6AD1F6C71FEE313300C1DEAD /* Security.framework in Frameworks */,
 				6AD1F6C91FEE314200C1DEAD /* SystemConfiguration.framework in Frameworks */,
-				6AF28DAF1FEE377A00A8A4CC /* CouchbaseLite.framework in Frameworks */,
 				6AD1F6CB1FEE314900C1DEAD /* libsqlite3.tbd in Frameworks */,
 				6AD1F6CF1FEE315E00C1DEAD /* libc++.tbd in Frameworks */,
 				6AD1F6CD1FEE315300C1DEAD /* libz.tbd in Frameworks */,
 				27E4A10125E528BD048F65E4 /* Pods_CoreData_CouchBase.framework in Frameworks */,
+				6AF28DAF1FEE377A00A8A4CC /* CouchbaseLite.framework in Frameworks */,
+				6AB2DCF51FEFADA200EFB1F1 /* 8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap in Frameworks */,
+				6AB2DCF91FEFADA800EFB1F1 /* CouchbaseLite.framework.dSYM in Frameworks */,
+				6AB2DCF71FEFADA400EFB1F1 /* 9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,7 +133,10 @@
 			children = (
 				6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */,
 				6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */,
+				6AA2CF971FEE7BFF0090F5AC /* CustomTableViewCell.swift */,
+				6AA2CF951FEE684B0090F5AC /* Person.swift */,
 				6AA2CF931FEE58550090F5AC /* Utilities.swift */,
+				6AB2DCFB1FEFBDE000EFB1F1 /* CoreDataHandler.swift */,
 				6AD1F6AE1FEE304000C1DEAD /* Main.storyboard */,
 				6AD1F6B41FEE304000C1DEAD /* Assets.xcassets */,
 				6AD1F6B61FEE304000C1DEAD /* LaunchScreen.storyboard */,
@@ -132,6 +150,9 @@
 		6AD1F6C31FEE312200C1DEAD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6AB2DCF81FEFADA800EFB1F1 /* CouchbaseLite.framework.dSYM */,
+				6AB2DCF61FEFADA400EFB1F1 /* 9B3A693B-5FA6-3408-A514-A4E62735551B.bcsymbolmap */,
+				6AB2DCF41FEFADA200EFB1F1 /* 8ED74967-CA82-33A3-ACAA-3A811121449A.bcsymbolmap */,
 				6AD1F6CE1FEE315E00C1DEAD /* libc++.tbd */,
 				6AD1F6CC1FEE315200C1DEAD /* libz.tbd */,
 				6AD1F6CA1FEE314900C1DEAD /* libsqlite3.tbd */,
@@ -157,6 +178,7 @@
 				935F8CF7FEC78832D475EE31 /* [CP] Embed Pods Frameworks */,
 				BE49AF0779357333FF2ADF52 /* [CP] Copy Pods Resources */,
 				6AF28DB11FEE377A00A8A4CC /* Embed Frameworks */,
+				6AB2DCFA1FEFADD100EFB1F1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -233,6 +255,19 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		6AB2DCFA1FEFADD100EFB1F1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 		935F8CF7FEC78832D475EE31 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,6 +305,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AB2DCFC1FEFBDE000EFB1F1 /* CoreDataHandler.swift in Sources */,
+				6AA2CF981FEE7BFF0090F5AC /* CustomTableViewCell.swift in Sources */,
+				6AA2CF961FEE684B0090F5AC /* Person.swift in Sources */,
 				6AD1F6AD1FEE304000C1DEAD /* ViewController.swift in Sources */,
 				6AD1F6B31FEE304000C1DEAD /* CoreData_CouchBase.xcdatamodeld in Sources */,
 				6AA2CF941FEE58550090F5AC /* Utilities.swift in Sources */,
@@ -418,6 +456,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "CoreData&CouchBase/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Sium.SmartHome.CoreData-CouchBase";
@@ -439,6 +478,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "CoreData&CouchBase/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Sium.SmartHome.CoreData-CouchBase";
