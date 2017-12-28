@@ -82,37 +82,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hXK-Ft-dbX">
-                                <rect key="frame" x="0.0" y="462" width="23" height="205"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="0Wv-8w-TFj" customClass="CustomTableViewCell" customModule="CoreData_CouchBase" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="23" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Wv-8w-TFj" id="heD-Ls-Lv4">
-                                            <rect key="frame" x="0.0" y="0.0" width="23" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sx2-X6-mUY">
-                                                    <rect key="frame" x="29" y="0.0" width="289" height="44"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="label" destination="sx2-X6-mUY" id="wab-Mu-l4K"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="nHT-Jj-NhK"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="NhO-zu-TjP"/>
-                                </connections>
-                            </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ID" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cdE-NN-e3j">
                                 <rect key="frame" x="31" y="462" width="324" height="67"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -133,7 +102,6 @@
                         <outlet property="saveButtonOutlet" destination="Ivm-nf-6PZ" id="1zh-SF-hTE"/>
                         <outlet property="searchButtonOutlet" destination="gKG-zW-UKc" id="CjU-Bn-Lzs"/>
                         <outlet property="searchTextField" destination="hJr-Fd-BrA" id="pvG-nc-I2b"/>
-                        <outlet property="testTableView" destination="hXK-Ft-dbX" id="Ggm-tK-WpD"/>
                         <outlet property="uniqueIDTextField" destination="nY7-bk-Tj8" id="5eo-kT-CiW"/>
                     </connections>
                 </viewController>

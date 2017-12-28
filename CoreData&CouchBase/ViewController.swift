@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import CouchbaseLite
 
-class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITextFieldDelegate {
     
     
     
@@ -32,8 +32,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     @IBOutlet weak var ageLabel: UILabel!
     
     
-    @IBOutlet weak var testTableView: UITableView!
-    
     @IBOutlet weak var idLabel: UILabel!
     
     
@@ -41,43 +39,22 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
     var database: CBLDatabase!
     var query: CBLQuery!
     let person = Person()
-    var cell = CustomTableViewCell()
+
     let core = CoreDataHandler()
     var corePerson: [Persons]? = nil
     
-    var docsEnumerator: CBLQueryEnumerator? {
-        didSet {
-            //core.cleanCoreData()
-            self.testTableView.reloadData()
-        }
-    }
-    
-    
-    enum datas: String {
-        case uniqueID = "id"
-        case name = "name"
-        case age = "age"
-    }
-    
+   
     
     //MARK: - Initialization
     func useDatabase(database: CBLDatabase!) -> Bool {
         
         guard database != nil else {return false}
         self.database = database
-       
-        database.viewNamed("byDate").setMapBlock({ (doc, emit) in
-            if let ID = doc["created_at"] as? String {
-                emit(ID, doc)
-            }
-        }, reduce: nil, version: "1.4.0")
         
         return true
     }
     
-    
-    
-    
+ 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,71 +69,37 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         self.ageLabel.isHidden = true
         
         
-        self.testTableView.dataSource = self
-        self.testTableView.delegate = self
-        self.testTableView.isHidden = true
-        
         // Database-related initialization:
         if useDatabase(database: appDelegate.database) {
             // Create a query sorted by descending date, i.e. newest items first:
            
-            /*NotificationCenter.default.addObserver(forName: NSNotification.Name.cblDatabaseChange, object: database, queue: nil) {
+            NotificationCenter.default.addObserver(forName: NSNotification.Name.cblDatabaseChange, object: database, queue: nil) {
                 (notification) -> Void in
                 if let changes = notification.userInfo!["changes"] as? [CBLDatabaseChange] {
                     for change in changes {
                         NSLog("Document '%@' changed.", change.documentID)
                         let document =  self.database.document(withID: change.documentID)
-                        var abs = document?.properties
-                        let name = abs!["name"] as? String
-                        print(name ?? "")
+                        var properties = document?.properties
+                        
+                        
+                        //var head = [String : Any]()
+                        if let head = (properties?["CoreCouch"] as? [String : Any]) {
+                
+                            self.person.uniqueIDs = Int((head["id"] as? String)!)
+                        print(self.person.uniqueIDs ?? "i")
+                            self.person.names = head["name"] as? String
+                            print(self.person.names ?? "n")
+                            self.person.ages = Int((head["age"] as? String)!)
+                            print(self.person.ages ?? "a")
+                        
+                        self.core.savedObjects(id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
+                        }
                     }
                 }
-            }*/
-            
-            
-            
-            
-            self.query = database.viewNamed("byDate").createQuery().asLive()
-            
-            self.query.descending = true
-            
-            guard self.query != nil else {
-                return
             }
- 
-            //self.query?.limit = UInt(UINT32_MAX)
             
-            self.addNormalLiveQueryObserverAndStartObserving()
-            
-            self.query?.runAsync({ (enumerator, error) in
-                switch error {
-                case nil:
-                    
-                    self.docsEnumerator = enumerator
-                    
-                default:
-                    
-                    print(error)
-                }
-            })
             
         }
-    }
-
-    func addNormalLiveQueryObserverAndStartObserving() {
-        self.query.addObserver(self, forKeyPath: "rows", options: NSKeyValueObservingOptions.new, context: nil)
-        
-        do {
-            try self.query.run()
-        } catch {
-            print(error)
-        }
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.testTableView.reloadData()
     }
 
     @IBAction func saveButtonAction(_ sender: Any) {
@@ -171,10 +114,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             ageTextField.text = nil
             
             let properties: [String : AnyObject] = [
+                "CoreCouch" :   [
                 "id": id as AnyObject,
                 "name": name as AnyObject,
                 "age": age as AnyObject,
-                "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
+                    "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject ] as AnyObject
             ]
             
             // Save the document:
@@ -193,69 +137,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
         nameTextField.resignFirstResponder()
         ageTextField.resignFirstResponder()
         searchTextField.resignFirstResponder()
-        self.testTableView.reloadData()
-    }
-    
-    //Table view to retrive datas
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (Int(self.docsEnumerator?.count ?? 0))
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CustomTableViewCell
-        
-        print("this is number of row \(String(describing: self.docsEnumerator?.count))")
-            cell.label?.text = ""
-            self.dataRetriveFromCouchBase(index: indexPath.row)
-        return cell
-    }
-    
-    
-    func dataRetriveFromCouchBase(index: Int){
-        if let queryRow = self.docsEnumerator?.row(at: UInt(index)) {
-            if let userProps = queryRow.document?.userProperties, let uniqueID = userProps[datas.uniqueID.rawValue] as? String, let name = userProps[datas.name.rawValue] as? String, let age = userProps[datas.age.rawValue] as? String {
-                
-                person.uniqueIDs = Int(uniqueID)
-                print("This is ID = \(person.uniqueIDs)")
-                person.names = name
-                print("This is name = \(person.names)")
-                person.ages = Int(age)
-                print("This is age = \(person.ages)")
-                
-                core.savedObjects(id: Int(person.uniqueIDs), name: String(person.names), age: Int(person.ages))
-                
-            }
-        }
-    }
-    
-    
-    public func addChangeListener(_ block: @escaping (CBLDatabaseChange) -> Void) -> NSObjectProtocol {
-        print("Change Listener")
-        
-        return "" as NSObjectProtocol
-    }
-    
-    
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "rows" {
-            self.query?.runAsync({ (enumerator, error) in
-                switch error {
-                case nil:
-                    self.docsEnumerator = enumerator
-                    
-                default:
-                    
-                    print(error)
-                }
-            })
-            
-            
-            //core.cleanCoreData()
-            self.testTableView.reloadData()
-        }
     }
     
     //TextField Delegates
@@ -296,27 +177,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             
             corePerson = core.filterData()
             
-            for i in corePerson! {
-                idLabel.isHidden = false
-                nameLabel.isHidden = false
-                ageLabel.isHidden = false
-                idLabel.text = "ID: \(String(i.id))"
-                print(i.id)
-                nameLabel.text = "Name: \(String(describing: i.name!))"
-                print((String(describing: i.name!)))
-                ageLabel.text = "Age: \(String(i.age))"
-                print((String(i.age)))
-            }
+            var loopChecker = false
             
-            if (corePerson?.count == 0) {
-                idLabel.isHidden = true
-                nameLabel.isHidden = true
-                ageLabel.isHidden = true
-            }
-            
-           /* corePerson = core.fetchID()
             for i in corePerson! {
-                 if (searchedText == Int(i.id)) {
+                
+                if core.searchID == Int(i.id){
+                    loopChecker = true
                     idLabel.isHidden = false
                     nameLabel.isHidden = false
                     ageLabel.isHidden = false
@@ -326,8 +192,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
                     print((String(describing: i.name!)))
                     ageLabel.text = "Age: \(String(i.age))"
                     print((String(i.age)))
-                 }
-            }*/
+                } else {
+                    if !loopChecker{
+                        idLabel.isHidden = true
+                        nameLabel.isHidden = true
+                        ageLabel.isHidden = true
+                    }
+                }
+            }            
         } else {
             uniqueIDTextField.text = nil
             nameTextField.text = nil
@@ -338,7 +210,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate
             self.ageLabel.isHidden = true
         }
         searchTextField.resignFirstResponder()
-        self.testTableView.reloadData()
     }
     
     
