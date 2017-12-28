@@ -38,6 +38,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     var database: CBLDatabase!
     var query: CBLQuery!
+    var queryEnumerator: CBLQueryEnumerator?
+    var queryRow: CBLQueryRow!
     let person = Person()
 
     let core = CoreDataHandler()
@@ -50,6 +52,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         guard database != nil else {return false}
         self.database = database
+        
+        database.viewNamed("byID").setMapBlock({ (doc, emit) in
+            if let id = doc["id"] as? String {
+                print(id)
+                emit(id, doc)
+            } else {
+                print(doc["id"])
+            }
+        }, reduce: nil, version: "7.9")
         
         return true
     }
@@ -72,7 +83,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         // Database-related initialization:
         if useDatabase(database: appDelegate.database) {
             // Create a query sorted by descending date, i.e. newest items first:
-           
+            /*query = database.viewNamed("byID").createQuery().asLive()
+            //query.descending = true
+            guard self.query != nil else {
+                return
+            }
+            self.query?.limit = UInt(UINT32_MAX)
+            
+            self.addNormalLiveQueryObserverAndStartObserving()
+            
+            self.query?.runAsync({ (enumerator, error) in
+                switch error {
+                case nil:
+                    // 5: The "enumerator" is of type CBLQueryEnumerator and is an enumerator for the results
+                    self.queryEnumerator = enumerator
+                    
+                default:
+                    //self.showAlertWithTitle(NSLocalizedString("Data Fetch Error!", comment: ""), message: error.localizedDescription)
+                    print(error)
+                }
+            })*/
+            
+            
             NotificationCenter.default.addObserver(forName: NSNotification.Name.cblDatabaseChange, object: database, queue: nil) {
                 (notification) -> Void in
                 if let changes = notification.userInfo!["changes"] as? [CBLDatabaseChange] {
@@ -80,17 +112,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
                         NSLog("Document '%@' changed.", change.documentID)
                         let document =  self.database.document(withID: change.documentID)
                         var properties = document?.properties
+                        if let id = properties?["id"] as? String, let name = properties?["name"] as? String, let age = properties?["age"] as? String {
                         
-                        
-                        //var head = [String : Any]()
-                        if let head = (properties?["CoreCouch"] as? [String : Any]) {
-                
-                            self.person.uniqueIDs = Int((head["id"] as? String)!)
+                            self.person.uniqueIDs = Int(id)
                         print(self.person.uniqueIDs ?? "i")
-                            self.person.names = head["name"] as? String
-                            print(self.person.names ?? "n")
-                            self.person.ages = Int((head["age"] as? String)!)
-                            print(self.person.ages ?? "a")
+                        self.person.names = name
+                        print(self.person.names ?? "n")
+                        self.person.ages = Int(age)
+                        print(self.person.ages ?? "a")
                         
                         self.core.savedObjects(id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
                         }
@@ -101,7 +130,38 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
         }
     }
+    
+    
+    func addNormalLiveQueryObserverAndStartObserving(query1: CBLLiveQuery) {
+        query1.addObserver(self, forKeyPath: "rows", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        /*do {
+            try query.run()
+        } catch {
+            print(error)
+        }*/
+        
+        query1.start()
+    }
 
+    /*override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "rows" {
+            
+            self.query?.runAsync({ (enumerator, error) in
+                switch error {
+                case nil:
+                    // 5: The "enumerator" is of type CBLQueryEnumerator and is an enumerator for the results
+                    self.queryEnumerator = enumerator
+                    
+                default:
+                    //self.showAlertWithTitle(NSLocalizedString("Data Fetch Error!", comment: ""), message: error.localizedDescription)
+                    print(error)
+                }
+            })
+        }
+    }*/
+    
+    
     @IBAction func saveButtonAction(_ sender: Any) {
         
         if uniqueIDTextField.text != "" && nameTextField.text != "" && ageTextField.text != "" {
@@ -114,30 +174,100 @@ class ViewController: UIViewController, UITextFieldDelegate {
             ageTextField.text = nil
             
             let properties: [String : AnyObject] = [
-                "CoreCouch" :   [
+    
                 "id": id as AnyObject,
                 "name": name as AnyObject,
                 "age": age as AnyObject,
-                    "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject ] as AnyObject
+                "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
             ]
             
-            // Save the document:
-            let doc = database.createDocument()
-            do {
-                try doc.putProperties(properties)
-                print("Database Created")
-            } catch let error as NSError {
-              
-                print("this is \(error)")
+            let newDocument = checkDocumentValidation(id: id!)
+            if newDocument != nil {
+                let documentId = newDocument.documentID
+                let doc = database.document(withID: documentId)
+                var propertie = doc?.properties
+            
+                propertie?["id"] = id as AnyObject
+                propertie?["name"] = name as AnyObject
+                propertie?["age"] = age as AnyObject
+                propertie?["created_at"] = CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
+                do {
+                    try doc?.putProperties(propertie!)
+                    print("Database Created")
+                } catch let error as NSError {
+                    
+                    print("this is \(error)")
+                }
+                
+            } else {
+            
+                // Save the document:
+                let doc = database.createDocument()
+                do {
+                    try doc.putProperties(properties)
+                    print("Database Created")
+                } catch let error as NSError {
+                    
+                    print("this is \(error)")
+                }
+            
             }
-            
-            
         }
         uniqueIDTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
         ageTextField.resignFirstResponder()
         searchTextField.resignFirstResponder()
     }
+    
+    func checkDocumentValidation(id: String) -> CBLDocument {
+        let query1: CBLLiveQuery!
+            
+         query1 = database.viewNamed("byID").createQuery().asLive()
+        //query.descending = true
+        //query1.startKey = id
+        //query1.endKey = id
+        var newQueryEnumerator: CBLQueryEnumerator!
+        var queryDocument: CBLDocument!
+        
+        self.addNormalLiveQueryObserverAndStartObserving(query1: query1)
+        
+        do {
+            try newQueryEnumerator = query1.run()
+            print(newQueryEnumerator.count)
+        
+            //newQueryEnumerator.enumerated()
+            if newQueryEnumerator?.count != nil {
+                newQueryEnumerator.reset()
+               
+                let queryR = newQueryEnumerator.nextRow()
+                print(queryR)
+                queryDocument = queryR?.document
+                print(queryDocument)
+                
+            }
+            
+        } catch  {
+            print(error)
+        }
+    
+        /*print("query")
+        print(newQueryEnumerator)
+        newQueryEnumerator?.reset()
+        do {
+            
+           
+            print(newQueryEnumerator?.reset())
+            queryRow = newQueryEnumerator?.nextRow()
+            print(queryRow)
+                queryDocument = queryRow?.document
+            print(queryDocument)
+        }*/
+        
+        return queryDocument
+    }
+    
+    
+    
     
     //TextField Delegates
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
