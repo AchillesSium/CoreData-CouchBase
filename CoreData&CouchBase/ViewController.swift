@@ -183,11 +183,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             let newDocument = checkDocumentValidation(id: id!)
             if newDocument != nil {
-                let documentId = newDocument.documentID
-                let doc = database.document(withID: documentId)
+                let documentId = newDocument?.documentID
+                let doc = database.document(withID: documentId!)
                 var propertie = doc?.properties
             
-                propertie?["id"] = id as AnyObject
+                //propertie?["id"] = id as AnyObject
                 propertie?["name"] = name as AnyObject
                 propertie?["age"] = age as AnyObject
                 propertie?["created_at"] = CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
@@ -219,13 +219,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         searchTextField.resignFirstResponder()
     }
     
-    func checkDocumentValidation(id: String) -> CBLDocument {
+    func checkDocumentValidation(id: String) -> CBLDocument? {
         let query1: CBLLiveQuery!
             
          query1 = database.viewNamed("byID").createQuery().asLive()
         //query.descending = true
-        //query1.startKey = id
-        //query1.endKey = id
+        query1.startKey = id
+        query1.endKey = id
         var newQueryEnumerator: CBLQueryEnumerator!
         var queryDocument: CBLDocument!
         
@@ -234,22 +234,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
         do {
             try newQueryEnumerator = query1.run()
             print(newQueryEnumerator.count)
-        
-            //newQueryEnumerator.enumerated()
-            if newQueryEnumerator?.count != nil {
-                newQueryEnumerator.reset()
-               
-                let queryR = newQueryEnumerator.nextRow()
-                print(queryR)
-                queryDocument = queryR?.document
-                print(queryDocument)
-                
-            }
             
+            //newQueryEnumerator.enumerated()
         } catch  {
             print(error)
         }
-    
+       // newQueryEnumerator.reset()
+            if newQueryEnumerator?.count != 0 {
+            let queryR = newQueryEnumerator.nextRow()
+            print(queryR)
+            queryDocument = queryR?.document
+            print(queryDocument)
+    }
+        
+        
         /*print("query")
         print(newQueryEnumerator)
         newQueryEnumerator?.reset()
