@@ -26,6 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var _pull: CBLReplication!
     private var _syncError: NSError?
     
+    var channel = [String]()
+    var channelName1 = "Aplomb"
+    var channelName2 = "Aplomb2"
+    
     let database: CBLDatabase!
     
     
@@ -33,8 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         database = try? CBLManager.sharedInstance().databaseNamed(kDatabaseName)
     }
     
-    
-
+   
     
     func applicationDidFinishLaunching(_ application: UIApplication) {
         guard database != nil else {
@@ -45,15 +48,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Initialize replication:
         print("1")
-        _push = setupReplication(replication: database.createPushReplication(kServerDbURL as URL))
-        _pull = setupReplication(replication: database.createPullReplication(kServerDbURL as URL))
+        _push = setup_pushReplication(replication: database.createPushReplication(kServerDbURL as URL))
+        
+       
+        _pull = setup_pullReplication(replication: database.createPullReplication(kServerDbURL as URL))
+        
+        channel.append(channelName1)
+        channel.append(channelName2)
+        _pull.channels = channel
+        
         _push.start()
         _pull.start()
         return
     }
     
-    
-    func setupReplication(replication: CBLReplication!) -> CBLReplication! {
+    //Push
+    func setup_pushReplication(replication: CBLReplication!) -> CBLReplication! {
         if replication != nil {
             replication.continuous = true
             print("Running")
@@ -62,6 +72,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return replication
     }
+    
+    //Pull
+    func setup_pullReplication(replication: CBLReplication!) -> CBLReplication! {
+        if replication != nil {
+            replication.continuous = true
+            print("Running")
+            
+            
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(replicationProgress(n:)), name: NSNotification.Name.cblReplicationChange, object: replication)
+        }
+        return replication
+    }
+    
     
     @objc func replicationProgress(n: NSNotification) {
         

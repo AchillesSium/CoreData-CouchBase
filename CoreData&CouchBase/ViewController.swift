@@ -45,7 +45,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     let core = CoreDataHandler()
     var corePerson: [Persons]? = nil
     
-   
+    var channels = [String]()
+    var channelName1 = "Aplomb"
+    var channelName2 = "Aplomb2"
     
     //MARK: - Initialization
     func useDatabase(database: CBLDatabase!) -> Bool {
@@ -173,11 +175,16 @@ class ViewController: UIViewController, UITextFieldDelegate {
             nameTextField.text = nil
             ageTextField.text = nil
             
-            let properties: [String : AnyObject] = [
+            channels.append(channelName1)
+            channels.append(channelName2)
+            
+            
+            let properties: [String : Any] = [
     
                 "id": id as AnyObject,
                 "name": name as AnyObject,
                 "age": age as AnyObject,
+                "channels": channels,
                 "created_at": CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
             ]
             
@@ -190,10 +197,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 //propertie?["id"] = id as AnyObject
                 propertie?["name"] = name as AnyObject
                 propertie?["age"] = age as AnyObject
+                propertie?["channels"] = channels
                 propertie?["created_at"] = CBLJSON.jsonObject(with: NSDate() as Date) as AnyObject
                 do {
                     try doc?.putProperties(propertie!)
-                    print("Database Created")
+                    print("Database Created 2")
                 } catch let error as NSError {
                     
                     print("this is \(error)")
@@ -205,7 +213,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 let doc = database.createDocument()
                 do {
                     try doc.putProperties(properties)
-                    print("Database Created")
+                    print("Database Created 1")
                 } catch let error as NSError {
                     
                     print("this is \(error)")
