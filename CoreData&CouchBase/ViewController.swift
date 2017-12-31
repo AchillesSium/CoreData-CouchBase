@@ -38,6 +38,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     var database: CBLDatabase!
     var query: CBLQuery!
+    var query1: CBLLiveQuery!
     var queryEnumerator: CBLQueryEnumerator?
     var queryRow: CBLQueryRow!
     let person = Person()
@@ -134,16 +135,16 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     
-    func addNormalLiveQueryObserverAndStartObserving(query1: CBLLiveQuery) {
-        query1.addObserver(self, forKeyPath: "rows", options: NSKeyValueObservingOptions.new, context: nil)
+    func addNormalLiveQueryObserverAndStartObserving() {
         
-        /*do {
-            try query.run()
-        } catch {
-            print(error)
-        }*/
+        guard let query1 = query1 else {
+            return
+        }
         
-        query1.start()
+        self.query1.addObserver(self, forKeyPath: "rows", options: NSKeyValueObservingOptions.new, context: nil)
+        
+        
+        self.query1.start()
     }
 
     /*override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -228,19 +229,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     func checkDocumentValidation(id: String) -> CBLDocument? {
-        let query1: CBLLiveQuery!
+        
             
-         query1 = database.viewNamed("byID").createQuery().asLive()
+        self.query1 = database.viewNamed("byID").createQuery().asLive()
         //query.descending = true
-        query1.startKey = id
-        query1.endKey = id
+        self.query1.startKey = id
+        self.query1.endKey = id
         var newQueryEnumerator: CBLQueryEnumerator!
         var queryDocument: CBLDocument!
         
-        self.addNormalLiveQueryObserverAndStartObserving(query1: query1)
+        self.addNormalLiveQueryObserverAndStartObserving()
         
         do {
-            try newQueryEnumerator = query1.run()
+            try newQueryEnumerator = self.query1.run()
             print(newQueryEnumerator.count)
             
             //newQueryEnumerator.enumerated()
@@ -254,25 +255,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
             queryDocument = queryR?.document
             print(queryDocument)
     }
-        
-        
-        /*print("query")
-        print(newQueryEnumerator)
-        newQueryEnumerator?.reset()
-        do {
-            
-           
-            print(newQueryEnumerator?.reset())
-            queryRow = newQueryEnumerator?.nextRow()
-            print(queryRow)
-                queryDocument = queryRow?.document
-            print(queryDocument)
-        }*/
-        
+        self.addNormalLiveQueryObserverAndStopObserving()
         return queryDocument
     }
     
-    
+    func addNormalLiveQueryObserverAndStopObserving() {
+        guard let query1 = query1 else {
+            return
+        }
+        // 1. iOS Specific. Remove observer from the live Query object
+        self.query1.removeObserver(self, forKeyPath: "rows")
+        
+        // 2. Stop observing changes
+        self.query1.stop()
+    }
     
     
     //TextField Delegates
