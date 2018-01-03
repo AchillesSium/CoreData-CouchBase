@@ -34,16 +34,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var idLabel: UILabel!
     
+    @IBOutlet weak var deleteIDText: UITextField!
+    
+    
+    
     
     
     var database: CBLDatabase!
     var query: CBLQuery!
+    var query1: CBLLiveQuery!
     var queryEnumerator: CBLQueryEnumerator?
     var queryRow: CBLQueryRow!
     let person = Person()
 
     let core = CoreDataHandler()
     var corePerson: [Persons]? = nil
+    var corePer: [Persons]? = nil
+    var coreP: [Persons]? = nil
     
     var channels = [String]()
     var channelName1 = "Aplomb"
@@ -76,6 +83,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.nameTextField.delegate = self
         self.ageTextField.delegate = self
         self.searchTextField.delegate = self
+        self.deleteIDText.delegate = self
         
         self.idLabel.isHidden = true
         self.nameLabel.isHidden = true
@@ -106,13 +114,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 }
             })*/
             
-            
             NotificationCenter.default.addObserver(forName: NSNotification.Name.cblDatabaseChange, object: database, queue: nil) {
                 (notification) -> Void in
                 if let changes = notification.userInfo!["changes"] as? [CBLDatabaseChange] {
                     for change in changes {
                         NSLog("Document '%@' changed.", change.documentID)
                         let document =  self.database.document(withID: change.documentID)
+                        
+                        if document?.isDeleted == true {
+                            self.coreP = self.core.filterData()
+                            
+                            for i in self.coreP! {
+                                if i.documentID == change.documentID {
+                                    self.core.deleteObject(person: i)
+                                }
+                            }
+                        }
+                        
                         var properties = document?.properties
                         if let id = properties?["id"] as? String, let name = properties?["name"] as? String, let age = properties?["age"] as? String {
                         
@@ -122,8 +140,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
                         print(self.person.names ?? "n")
                         self.person.ages = Int(age)
                         print(self.person.ages ?? "a")
-                        
-                        self.core.savedObjects(id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
+                        print(change.documentID)
+                            self.core.savedObjects(documentID: change.documentID, id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
                         }
                     }
                 }
@@ -228,12 +246,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     func checkDocumentValidation(id: String) -> CBLDocument? {
-        let query1: CBLLiveQuery!
+        
             
-         query1 = database.viewNamed("byID").createQuery().asLive()
+        self.query1 = database.viewNamed("byID").createQuery().asLive()
         //query.descending = true
-        query1.startKey = id
-        query1.endKey = id
+        self.query1.startKey = id
+        self.query1.endKey = id
         var newQueryEnumerator: CBLQueryEnumerator!
         var queryDocument: CBLDocument!
         
@@ -254,25 +272,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
             queryDocument = queryR?.document
             print(queryDocument)
     }
-        
-        
-        /*print("query")
-        print(newQueryEnumerator)
-        newQueryEnumerator?.reset()
-        do {
-            
-           
-            print(newQueryEnumerator?.reset())
-            queryRow = newQueryEnumerator?.nextRow()
-            print(queryRow)
-                queryDocument = queryRow?.document
-            print(queryDocument)
-        }*/
-        
+        self.removeLiveQueryObserverAndStopObserving()
         return queryDocument
     }
     
-    
+    fileprivate func removeLiveQueryObserverAndStopObserving() {
+        guard (self.query1) != nil else {
+            return
+        }
+        // 1. iOS Specific. Remove observer from the live Query object
+        self.query1.removeObserver(self, forKeyPath: "rows")
+        
+        // 2. Stop observing changes
+        self.query1.stop()
+        
+    }
     
     
     //TextField Delegates
@@ -281,6 +295,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         nameTextField.resignFirstResponder()
         ageTextField.resignFirstResponder()
         searchTextField.resignFirstResponder()
+        deleteIDText.resignFirstResponder()
         
         return true
     }
@@ -295,6 +310,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         if ageTextField.text == "" {
+            return
+        }
+        if deleteIDText.text == "" {
             return
         }
         
@@ -322,6 +340,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     idLabel.isHidden = false
                     nameLabel.isHidden = false
                     ageLabel.isHidden = false
+                    print(i.documentID)
                     idLabel.text = "ID: \(String(i.id))"
                     print(i.id)
                     nameLabel.text = "Name: \(String(describing: i.name!))"
@@ -347,6 +366,55 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         searchTextField.resignFirstResponder()
     }
+    
+    
+    
+    @IBAction func deleteButtonAction(_ sender: Any) {
+        
+        
+        if deleteIDText.text != "" {
+            let deletededText = Int(deleteIDText.text!)
+            core.searchID = deletededText
+            
+            deleteIDText.text = nil
+            
+            corePer = core.filterData()
+            
+            var count = 0
+            
+            for i in corePer! {
+                
+                if core.searchID == Int(i.id){
+                    count = count + 1
+                    print("deleted \(i.id)")
+                    let documentID: String!
+                    documentID = i.documentID
+                    print(count)
+                    print(documentID)
+                    let doc = self.database.document(withID: documentID)
+                    do {
+                        try doc?.delete()
+                        print("Success")
+                    } catch {
+                        print(error)
+                    }
+                    
+                    core.deleteObject(person: i)
+                }
+            }
+            
+           /* let doc = database.document(withID: documentID)
+            var error: NSError?
+            if !doc.deleteDocument(&error) {
+                self.handleError(error)
+            }*/
+        }
+        
+        deleteIDText.resignFirstResponder()
+    }
+    
+    
+    
     
     
     var appDelegate : AppDelegate {
