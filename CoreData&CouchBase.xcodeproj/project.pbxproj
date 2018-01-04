@@ -54,7 +54,7 @@
 		6AB2DCFB1FEFBDE000EFB1F1 /* CoreDataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataHandler.swift; path = ../../../../XcodeSiumProjects/CouchBaseLiteSium2/CouchBaseLiteSium2/CoreDataHandler.swift; sourceTree = "<group>"; };
 		6AD1F6A71FEE304000C1DEAD /* CoreData&CouchBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoreData&CouchBase.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AD1F6AA1FEE304000C1DEAD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		6AD1F6AC1FEE304000C1DEAD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		6AD1F6AF1FEE304000C1DEAD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6AD1F6B21FEE304000C1DEAD /* CoreData_CouchBase.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData_CouchBase.xcdatamodel; sourceTree = "<group>"; };
 		6AD1F6B41FEE304000C1DEAD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };

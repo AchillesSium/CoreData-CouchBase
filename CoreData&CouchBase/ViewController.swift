@@ -34,7 +34,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var idLabel: UILabel!
     
+    @IBOutlet weak var deleteIDText: UITextField!
     
+    @IBOutlet weak var deleteLabel: UILabel!
     
     var database: CBLDatabase!
     var query: CBLQuery!
@@ -77,10 +79,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.nameTextField.delegate = self
         self.ageTextField.delegate = self
         self.searchTextField.delegate = self
+        self.deleteIDText.delegate = self
         
         self.idLabel.isHidden = true
         self.nameLabel.isHidden = true
         self.ageLabel.isHidden = true
+        
+        self.deleteLabel.isHidden = true
+        
+        //Remove keyboard by tapping anywhere in the app
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        view.addGestureRecognizer(tap)
         
         
         // Database-related initialization:
@@ -114,6 +123,21 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     for change in changes {
                         NSLog("Document '%@' changed.", change.documentID)
                         let document =  self.database.document(withID: change.documentID)
+                        
+                        if document?.isDeleted == true {
+                            self.corePerson = self.core.filterData()
+                            
+                            for i in self.corePerson! {
+                                if i.documentID == change.documentID {
+                                    self.core.deleteObject(person: i)
+                                }
+                            }
+                            
+                            self.corePerson = nil
+                        }
+                        
+                        
+                        
                         var properties = document?.properties
                         if let id = properties?["id"] as? String, let name = properties?["name"] as? String, let age = properties?["age"] as? String {
                         
@@ -124,7 +148,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                         self.person.ages = Int(age)
                         print(self.person.ages ?? "a")
                         
-                        self.core.savedObjects(id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
+                        self.core.savedObjects(documentID: change.documentID, id: Int(self.person.uniqueIDs), name: String(self.person.names), age: Int(self.person.ages))
                         }
                     }
                 }
@@ -166,6 +190,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func saveButtonAction(_ sender: Any) {
+        self.deleteLabel.isHidden = true
         
         if uniqueIDTextField.text != "" && nameTextField.text != "" && ageTextField.text != "" {
             let id = uniqueIDTextField.text
@@ -226,6 +251,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         nameTextField.resignFirstResponder()
         ageTextField.resignFirstResponder()
         searchTextField.resignFirstResponder()
+        deleteIDText.resignFirstResponder()
     }
     
     func checkDocumentValidation(id: String) -> CBLDocument? {
@@ -272,11 +298,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     //TextField Delegates
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.deleteLabel.isHidden = true
+    }
+    
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         uniqueIDTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
         ageTextField.resignFirstResponder()
         searchTextField.resignFirstResponder()
+        deleteIDText.resignFirstResponder()
         
         return true
     }
@@ -293,7 +325,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         if ageTextField.text == "" {
             return
         }
-        
+        if deleteIDText.text == "" {
+            return
+        }
         
         return
     }
@@ -301,17 +335,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func searchAction(_ sender: Any) {
+        self.deleteLabel.isHidden = true
         if searchTextField.text != "" {
             let searchedText = Int(searchTextField.text!)
             core.searchID = searchedText
             
             searchTextField.text = nil
             
-            corePerson = core.filterData()
+            self.corePerson = core.filterData()
             
             var loopChecker = false
             
-            for i in corePerson! {
+            for i in self.corePerson! {
                 
                 if core.searchID == Int(i.id){
                     loopChecker = true
@@ -331,7 +366,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
                         ageLabel.isHidden = true
                     }
                 }
-            }            
+            }
+            self.corePerson = nil
         } else {
             uniqueIDTextField.text = nil
             nameTextField.text = nil
@@ -344,6 +380,51 @@ class ViewController: UIViewController, UITextFieldDelegate {
         searchTextField.resignFirstResponder()
     }
     
+    @IBAction func deleteButtonAction(_ sender: Any) {
+        if deleteIDText.text != "" {
+            deleteLabel.isHidden = false
+            let deletededText = Int(deleteIDText.text!)
+            core.searchID = deletededText
+            
+            deleteIDText.text = nil
+            
+            self.corePerson = core.filterData()
+            var deletID: Int!
+            
+            var count = 0
+            
+            for i in self.corePerson! {
+                
+                if core.searchID == Int(i.id){
+                    count = count + 1
+                    print("deleted \(i.id)")
+                    deletID = Int(i.id)
+                    let documentID: String!
+                    documentID = i.documentID
+                    print(count)
+                    print(documentID)
+                    let doc = self.database.document(withID: documentID)
+                    do {
+                        try doc?.delete()
+                        print("Success")
+                    } catch {
+                        print(error)
+                    }
+                    
+                    core.deleteObject(person: i)
+                }
+            }
+            deleteLabel.text = "Deleted Id: \(deletID!)"
+            self.corePerson = nil
+        }
+       
+        deleteIDText.resignFirstResponder()
+    }
+    
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
     
     var appDelegate : AppDelegate {
         return UIApplication.shared.delegate as! AppDelegate
